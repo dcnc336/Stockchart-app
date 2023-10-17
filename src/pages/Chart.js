@@ -15,9 +15,9 @@ import {
 	SARSeries,
 	CandlestickSeries,
     BarSeries,
-    BollingerSeries
+    LineSeries
 } from "react-stockcharts/lib/series";
-import { change, elderRay,bollingerBand } from "react-stockcharts/lib/indicator";
+import { change, elderRay } from "react-stockcharts/lib/indicator";
 
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
@@ -37,36 +37,13 @@ const candlesAppearance = {
     opacity: 1,
 }
 
-const bbAppearance = {
-	stroke: {
-		top: "#964B00",
-		middle: "#FF6600",
-		bottom: "#964B00",
-	},
-	fill: "#4682B4"
-};
-
-// const linesAppearance = {
-//     wickStroke: "#000000",
-//     fill: function fill(d) {
-//       return d.close > d.open ? "#15cd0b" : "#f11818";
-//     },
-//     stroke: "#000000",
-//     candleStrokeWidth: 1,
-//     widthRatio: 0.8,
-//     opacity: 1,
-// }
-
 
 class ChartPage extends React.Component {
     render(){
         const { type, width, initialData } = this.props;
         const elder = elderRay();
         const changeCalculator = change();
-        const bb = bollingerBand()
-            .merge((d, c) => {d.bb = c;})
-            .accessor(d => d.bb);
-        const calculatedData = bb(changeCalculator(elder(initialData)));
+        const calculatedData = changeCalculator(elder(initialData));
         const accelerationFactor = .02;
         const maxAccelerationFactor = .2;
         const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(d => d.date);
@@ -82,10 +59,9 @@ class ChartPage extends React.Component {
             xAccessor(data[0])
         ];
 
-    
         return (
             <>
-                <ChartCanvas height={700}
+                <ChartCanvas height={800}
                     ratio={1}
                     width={width-40}
                     margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
@@ -100,8 +76,8 @@ class ChartPage extends React.Component {
         
                     <Chart 
                         id={1} yExtents={d => [d.high, d.low]}
-                        origin={(w,h) => [0,h-700]}
-                        height={500}
+                        origin={(w,h) => [0,h-730]}
+                        height={400}
                     >
                         <YAxis axisAt="left" orient="left" ticks={5} />
                         <CandlestickSeries {...candlesAppearance}/>
@@ -109,25 +85,18 @@ class ChartPage extends React.Component {
                             yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
                         <SARSeries yAccessor={d => d.sar}/>
-                        <BollingerSeries 
-                            yAccessor={d => d.bb}
-                            {...bbAppearance} 
-                        />
                         <MouseCoordinateY
                             at="right"
                             orient="right"
                             displayFormat={format(".2f")} />
                         <OHLCTooltip origin={[-40, 0]}/>
-                        <SingleValueTooltip
-                            yLabel={`SAR (${accelerationFactor}, ${maxAccelerationFactor})`}
-                            origin={[-40, 20]}/>
                     </Chart>
                     <CrossHairCursor />
                     <Chart 
                         id={2} 
                         yExtents={[0, d => d.returns]}
-                        origin={(w,h) => [0,h-200]}
-                        height={200}
+                        origin={(w,h) => [0,h-330]}
+                        height={150}
                     >
                         <XAxis axisAt="bottom" orient="bottom"/>
                         <YAxis axisAt="right" orient="right" ticks={5} />
@@ -145,7 +114,43 @@ class ChartPage extends React.Component {
                             orient="right"
                             displayFormat={format(".2f")} />
                         <SingleValueTooltip
-                            yLabel={`SAR (${accelerationFactor}, ${maxAccelerationFactor})`}
+                            yLabel={`Difference (${accelerationFactor}, ${maxAccelerationFactor})`}
+                            origin={[-40, 20]}/>
+                    </Chart>
+                    <Chart 
+                        id={3} 
+                        yExtents={d => [d.posterior_0, d.posterior_1, d.posterior_2, d.posterior_3]}
+                        origin={(w,h) => [0,h-150]}
+                        height={150}
+                    >
+                        <XAxis axisAt="bottom" orient="bottom"/>
+                        <YAxis axisAt="right" orient="right" ticks={5} />
+                        <LineSeries
+                            yAccessor={d => d.posterior_0}
+                            stroke="#0033fb"
+                        />
+                        <LineSeries
+                            yAccessor={d => d.posterior_1}
+                            stroke="#00fbf3"
+                        />
+                        <LineSeries
+                            yAccessor={d => d.posterior_2}
+                            stroke="#fbf700"
+                        />
+                        <LineSeries
+                            yAccessor={d => d.posterior_3}
+                            stroke="#e33409"
+                        />
+                        <MouseCoordinateX
+                            at="bottom"
+                            orient="bottom"
+                            displayFormat={timeFormat("%Y-%m-%d")} />
+                        <MouseCoordinateY
+                            at="right"
+                            orient="right"
+                            displayFormat={format(".2f")} />
+                        <SingleValueTooltip
+                            yLabel={`Posterior (${accelerationFactor}, ${maxAccelerationFactor})`}
                             origin={[-40, 20]}/>
                     </Chart>
                     <CrossHairCursor />
