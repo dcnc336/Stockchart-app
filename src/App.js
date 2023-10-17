@@ -24,7 +24,7 @@ function App() {
   const handleClick = () => {
     inputRef.current?.click();
   }
-  const chartKey = ['date', 'open', 'high', 'low', 'close', 'volume','returns', 'states'];
+  const chartKey = ['date', 'open', 'high', 'low', 'close', 'volume','returns', 'states', 'posterior_state_0', 'posterior_state_1', 'posterior_state_2','posterior_state_3'];
   const isKeysInArray = (arrays, keys) => {
     let tempObject = {};
     for ( var i = 0 ; i < keys.length ; i ++ ){
@@ -81,7 +81,11 @@ function App() {
           close: row[result.close],
           volume: row[result.volume],
           returns: parseFloat(row[result.returns]),
-          states: parseInt(row[result.states])
+          states: parseInt(row[result.states]),
+          posterior_0: parseFloat(row[result.posterior_state_0]),
+          posterior_1: parseFloat(row[result.posterior_state_1]),
+          posterior_2: parseFloat(row[result.posterior_state_2]),
+          posterior_3: parseFloat(row[result.posterior_state_3]),
         });
       }
     });
