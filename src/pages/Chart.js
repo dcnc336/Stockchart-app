@@ -15,8 +15,9 @@ import {
 	SARSeries,
 	CandlestickSeries,
     BarSeries,
+    BollingerSeries
 } from "react-stockcharts/lib/series";
-import { change, elderRay } from "react-stockcharts/lib/indicator";
+import { change, elderRay,bollingerBand } from "react-stockcharts/lib/indicator";
 
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
@@ -36,6 +37,15 @@ const candlesAppearance = {
     opacity: 1,
 }
 
+const bbAppearance = {
+	stroke: {
+		top: "#964B00",
+		middle: "#FF6600",
+		bottom: "#964B00",
+	},
+	fill: "#4682B4"
+};
+
 // const linesAppearance = {
 //     wickStroke: "#000000",
 //     fill: function fill(d) {
@@ -53,7 +63,10 @@ class ChartPage extends React.Component {
         const { type, width, initialData } = this.props;
         const elder = elderRay();
         const changeCalculator = change();
-        const calculatedData = changeCalculator(elder(initialData));
+        const bb = bollingerBand()
+            .merge((d, c) => {d.bb = c;})
+            .accessor(d => d.bb);
+        const calculatedData = bb(changeCalculator(elder(initialData)));
         const accelerationFactor = .02;
         const maxAccelerationFactor = .2;
         const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(d => d.date);
@@ -68,6 +81,7 @@ class ChartPage extends React.Component {
             xAccessor(last(data)),
             xAccessor(data[0])
         ];
+
     
         return (
             <>
@@ -95,6 +109,10 @@ class ChartPage extends React.Component {
                             yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
                         <SARSeries yAccessor={d => d.sar}/>
+                        <BollingerSeries 
+                            yAccessor={d => d.bb}
+                            {...bbAppearance} 
+                        />
                         <MouseCoordinateY
                             at="right"
                             orient="right"
