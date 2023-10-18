@@ -6,7 +6,6 @@ import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { OHLCTooltip, SingleValueTooltip } from "react-stockcharts/lib/tooltip";
 import {
 	CrossHairCursor,
-	EdgeIndicator,
 	MouseCoordinateX,
 	MouseCoordinateY,
 } from "react-stockcharts/lib/coordinates";

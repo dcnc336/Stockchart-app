@@ -129,6 +129,11 @@ function App() {
       return;
     }
     let temp=data.filter(one => one.types === 0);
+    console.log(temp);
+    if ( temp.length === 0 ) {
+      toast.warn('Warning: You must select main file first');
+      return;
+    }
     forecastRows.map((row,index) => {
       if ( index !== 0 && index !== 1 ){
         const date = new Date(temp[temp.length-1].date);
