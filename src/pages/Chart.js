@@ -6,7 +6,6 @@ import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { OHLCTooltip, SingleValueTooltip } from "react-stockcharts/lib/tooltip";
 import {
 	CrossHairCursor,
-	EdgeIndicator,
 	MouseCoordinateX,
 	MouseCoordinateY,
 } from "react-stockcharts/lib/coordinates";
@@ -29,7 +28,7 @@ import { last  } from "react-stockcharts/lib/utils";
 const candlesAppearance = {
     wickStroke: "#000000",
     fill: function fill(d) {
-      return d.close > d.open ? "#15cd0b" : "#f11818";
+      return typeof d.open === 'string' ? "#646567": (d.close > d.open ? "#15cd0b" : "#f11818");
     },
     stroke: "#000000",
     candleStrokeWidth: 1,
@@ -75,14 +74,14 @@ class ChartPage extends React.Component {
                 >
         
                     <Chart 
-                        id={1} yExtents={d => [d.high, d.low]}
+                        id={1} yExtents={d => [d.high, d.low, d.types]}
                         origin={(w,h) => [0,h-730]}
                         height={400}
                     >
                         <YAxis axisAt="left" orient="left" ticks={5} />
                         <CandlestickSeries {...candlesAppearance}/>
-                        <EdgeIndicator itemType="last" orient="right" edgeAt="right"
-                            yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+                        {/* <EdgeIndicator itemType="last" orient="right" edgeAt="right"
+                            yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/> */}
 
                         <SARSeries yAccessor={d => d.sar}/>
                         <MouseCoordinateY
@@ -127,19 +126,19 @@ class ChartPage extends React.Component {
                         <YAxis axisAt="right" orient="right" ticks={5} />
                         <LineSeries
                             yAccessor={d => d.posterior_0}
-                            stroke="#0033fb"
+                            stroke="#bd35f3"
                         />
                         <LineSeries
                             yAccessor={d => d.posterior_1}
-                            stroke="#00fbf3"
+                            stroke="#2df5ed"
                         />
                         <LineSeries
                             yAccessor={d => d.posterior_2}
-                            stroke="#fbf700"
+                            stroke="#f1f52d"
                         />
                         <LineSeries
                             yAccessor={d => d.posterior_3}
-                            stroke="#e33409"
+                            stroke="#ff7a19"
                         />
                         <MouseCoordinateX
                             at="bottom"
