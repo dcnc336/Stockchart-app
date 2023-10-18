@@ -29,7 +29,7 @@ import { last  } from "react-stockcharts/lib/utils";
 const candlesAppearance = {
     wickStroke: "#000000",
     fill: function fill(d) {
-      return typeof d.open === 'string' ? "#ce0bff": (d.close > d.open ? "#15cd0b" : "#f11818");
+      return typeof d.open === 'string' ? "#646567": (d.close > d.open ? "#15cd0b" : "#f11818");
     },
     stroke: "#000000",
     candleStrokeWidth: 1,
